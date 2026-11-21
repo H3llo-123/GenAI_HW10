@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會計學入門：跟著手搖飲店搞懂商業語言</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --slide-bg: rgba(30, 41, 59, 0.85);
+            --slide-border: rgba(255, 255, 255, 0.1);
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent-green: #34d399;
+            --accent-amber: #fbbf24;
+            --accent-rose: #f87171;
+            --accent-purple: #c084fc;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: rgba(15, 23, 42, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Top Progress Bar */
+        #progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent-green));
+            width: 5.5%;
+            transition: width 0.3s ease;
+        }
+
+        /* Top Navigation Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 32px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--slide-border);
+            z-index: 10;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .badge-stage {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .slide-counter {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* Slide Main Container */
+        #presentation-viewport {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            height: 82vh;
+            background: var(--slide-bg);
+            border: 1px solid var(--slide-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(12px);
+            padding: 36px 44px;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeIn 0.35s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.99); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Typography */
+        h1.slide-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        p.slide-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        /* Card Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        /* Color accents */
+        .asset-color { color: var(--primary); }
+        .liability-color { color: var(--accent-amber); }
+        .equity-color { color: var(--accent-green); }
+        .expense-color { color: var(--accent-rose); }
+        .revenue-color { color: #38bdf8; }
+
+        .tag-blue { background: rgba(56, 189, 248, 0.15); color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .tag-amber { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
+        .tag-green { background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border: 1px solid rgba(52, 211, 153, 0.3); }
+        .tag-rose { background: rgba(248, 113, 113, 0.15); color: var(--accent-rose); border: 1px solid rgba(248, 113, 113, 0.3); }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Tea Shop Story Box */
+        .story-box {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.3), rgba(15, 23, 42, 0.8));
+            border-left: 4px solid var(--accent-amber);
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            margin: 14px 0;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .story-title {
+            font-weight: 700;
+            color: var(--accent-amber);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Formula display box */
+        .formula-box {
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid rgba(56, 189, 248, 0.3);
+            border-radius: 14px;
+            padding: 18px 24px;
+            text-align: center;
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 16px 0;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        /* T-Account styling */
+        .t-account {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .t-account-title {
+            background: #1e293b;
+            text-align: center;
+            padding: 6px;
+            font-weight: 700;
+            color: #f8fafc;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .t-account-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 80px;
+        }
+
+        .t-debit {
+            border-right: 2px solid #334155;
+            padding: 8px;
+            color: #93c5fd;
+        }
+
+        .t-credit {
+            padding: 8px;
+            text-align: right;
+            color: #86efac;
+        }
+
+        /* Table styles */
+        table.slide-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin: 12px 0;
+        }
+
+        table.slide-table th, table.slide-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        table.slide-table th {
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        table.slide-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Flow steps horizontal */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 16px 0;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .flow-step {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            text-align: center;
+            flex: 1;
+            min-width: 90px;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .flow-step.active-step {
+            border-color: var(--primary);
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .flow-arrow {
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Journal entry code format */
+        .journal-code {
+            background: #090d16;
+            border-left: 3px solid var(--primary);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.92rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+            margin: 8px 0;
+        }
+
+        .indent-entry {
+            margin-left: 36px;
+        }
+
+        /* Interactive Quiz Buttons */
+        .quiz-option {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .quiz-answer {
+            display: none;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 6px;
+            color: #6ee7b7;
+            font-size: 0.9rem;
+        }
+
+        /* Bottom Controls */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 32px;
+            background: rgba(15, 23, 42, 0.7);
+            border-top: 1px solid var(--slide-border);
+            z-index: 10;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        button.btn-nav {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--slide-border);
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        button.btn-nav:hover:not(:disabled) {
+            background: var(--primary);
+            color: #0f172a;
+            border-color: var(--primary);
+        }
+
+        button.btn-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .shortcuts-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        kbd {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Indicator -->
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="brand-title">
+            <span>🥤 清爽茶飲店的會計修煉</span>
+            <span class="badge-stage" id="stage-badge">階段一：會計本質</span>
+        </div>
+        <div class="slide-counter" id="slide-counter">1 / 18</div>
+    </header>
+
+    <!-- Main Viewport -->
+    <main id="presentation-viewport">
+
+        <!-- ==========================================
+             SLIDE 1: 封面與四大核心學習成果
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/index.md
+        - wiki/concepts/accounting.md
+        -->
+        <section class="slide active" data-stage="階段一：會計本質">
+            <div style="text-align: center; margin: auto 0;">
+                <div style="display: inline-block; padding: 6px 16px; border-radius: 999px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--primary); font-size: 0.95rem; font-weight: 600; margin-bottom: 16px;">
+                    大學初級會計學精華入門
+                </div>
+                <h1 style="font-size: 2.7rem; font-weight: 800; line-height: 1.25; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    會計學入門：跟著手搖飲店搞懂商業語言
+                </h1>
+                <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 750px; margin: 0 auto 32px auto; line-height: 1.6;">
+                    沒有枯燥無味的背誦，我們以「清爽茶飲店」的創立與成長為貫穿案例，帶你掌握現代商業社會最重要的底層邏輯。
+                </p>
+
+                <div class="grid-4" style="text-align: left;">
+                    <div class="card" style="border-top: 3px solid var(--primary);">
+                        <div class="card-header" style="font-size: 1rem;"><span class="tag tag-blue">目標 1</span> 會計是什麼？</div>
+                        <div class="card-body" style="font-size: 0.88rem;">用白話說出會計在做什麼，以及內部與外部使用者如何用它決策。</div>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--accent-green);">
+                        <div class="card-header" style="font-size: 1rem;"><span class="tag tag-green">目標 2</span> 會計恆等式</div>
+                        <div class="card-body" style="font-size: 0.88rem;">說出「資產 ＝ 負債 ＋ 權益」，並用開茶飲店的例子靈活解釋。</div>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--accent-amber);">
+                        <div class="card-header" style="font-size: 1rem;"><span class="tag tag-amber">目標 3</span> 兩大核心報表</div>
+                        <div class="card-body" style="font-size: 0.88rem;">一眼看懂資產負債表（存量快照）與損益表（期間流量）各自回答的問題。</div>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--accent-rose);">
+                        <div class="card-header" style="font-size: 1rem;"><span class="tag tag-rose">目標 4</span> 借貸與分錄</div>
+                        <div class="card-body" style="font-size: 0.88rem;">破除「借錢」迷思，理解任何一筆交易如何轉化為借貸平衡分錄。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 2: 會計是什麼？為什麼需要會計？
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/accounting.md
+        - wiki/comparisons/bookkeeping-vs-accounting.md
+        -->
+        <section class="slide" data-stage="階段一：會計本質">
+            <h1 class="slide-title"><span>🗣️</span> 第一講：會計是什麼？商業的通用語言</h1>
+            <p class="slide-subtitle">會計不是數學運算，而是一套記錄、彙整並向利害關係人「溝通」經濟活動的標準語言。</p>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><span style="font-size: 1.5rem;">🔍</span> 1. 辨認 (Identifying)</div>
+                    <div class="card-body">從日常千頭萬緒的事件中，挑選出真正會<strong>改變企業財務狀況</strong>的經濟活動（例如：買機器、賣飲料），排除非會計事件。</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span style="font-size: 1.5rem;">📝</span> 2. 記錄 (Recording)</div>
+                    <div class="card-body">按照系統化的標準流程（日記簿分錄、分類帳過帳），以貨幣為共通度量衡，有系統地編排並按時序登載。</div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span style="font-size: 1.5rem;">📊</span> 3. 溝通 (Communicating)</div>
+                    <div class="card-body">將海量記錄彙編成標準化的<strong>財務報表</strong>，讓看不見店面運作的利害關係人，也能對經營成果做出理性分析與決策。</div>
+                </div>
+            </div>
+
+            <div class="story-box">
+                <div class="story-title">🥤 清爽茶飲店情境</div>
+                張老闆每天在店裡煮茶、買冰塊、收客人的錢。如果只是記在隨身小抄上，那叫<strong>「簿記 (Bookkeeping)」</strong>；但如果能將這些數字轉換成利潤分析、向銀行證明還款能力、向合夥人報告分紅，這整套管理與報導系統才叫<strong>「會計 (Accounting)」</strong>！
+            </div>
+
+            <div class="card" style="margin-top: 10px; background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.2);">
+                <div class="card-body" style="color: #e2e8f0;">
+                    💡 <strong>核心對照：</strong>「簿記」只是會計日常例行記錄的基礎環節；而「會計」則涵蓋了<strong>制度設計、編製報表、審計核實與決策分析</strong>的高層次專業工作。
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 3: 誰會使用會計資訊？
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/accounting-users.md
+        - wiki/reports/financial-statements-overview.md
+        -->
+        <section class="slide" data-stage="階段二：資訊使用者">
+            <h1 class="slide-title"><span>👥</span> 第二講：誰會使用會計資訊？兩大陣營</h1>
+            <p class="slide-subtitle">財務報表不是寫給會計師自己看的，而是服務兩大類做出經濟決策的人。</p>
+
+            <div class="grid-2">
+                <div class="card" style="border-top: 4px solid var(--primary);">
+                    <div class="card-header" style="color: var(--primary);">
+                        <span>🏢</span> 內部使用者 (Internal Users)
+                    </div>
+                    <div class="card-body">
+                        <p style="margin-bottom: 8px;"><strong>身份：</strong>行銷經理、店長、財務長、生產部門主管等企業內部管理者。</p>
+                        <p style="margin-bottom: 8px;"><strong>關心問題：</strong></p>
+                        <ul style="padding-left: 20px; line-height: 1.6;">
+                            <li>這杯招牌珍珠奶茶定價 65 元會不會虧本？</li>
+                            <li>下個月該給工讀生調薪多少？</li>
+                            <li>要不要在東區開第二家分店？</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><span class="tag tag-blue">專屬系統：管理會計 (Management Accounting)</span><br><small style="color: var(--text-muted);">內部專用、高度客製化，不受外在法規拘束。</small></p>
+                    </div>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--accent-amber);">
+                    <div class="card-header" style="color: var(--accent-amber);">
+                        <span>🌍</span> 外部使用者 (External Users)
+                    </div>
+                    <div class="card-body">
+                        <p style="margin-bottom: 8px;"><strong>身份：</strong>投資人（股東）、貸款銀行、供應商、國稅局、客戶。</p>
+                        <p style="margin-bottom: 8px;"><strong>關心問題：</strong></p>
+                        <ul style="padding-left: 20px; line-height: 1.6;">
+                            <li><strong>投資人：</strong>茶飲店今年賺多少錢？張老闆會發多少股利給我？</li>
+                            <li><strong>銀行：</strong>借給茶飲店 50 萬買設備，它按時還得起嗎？</li>
+                            <li><strong>國稅局：</strong>營業額是否誠實申報繳納營業稅？</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><span class="tag tag-amber">專屬系統：財務會計 (Financial Accounting)</span><br><small style="color: var(--text-muted);">必須遵循一般公認會計原則 (GAAP / IFRS)，公開公正。</small></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-box" style="margin-top: 18px;">
+                <div class="story-title">🥤 清爽茶飲店情境</div>
+                張老闆看店內每週銷量表決定進多少鮮奶，這是<strong>管理會計</strong>；而當張老闆向玉山銀行申請青創貸款時，遞交出去的標準資產負債表與損益表，就是<strong>財務會計</strong>。
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 4: 資產、負債與權益
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/assets.md
+        - wiki/concepts/liabilities.md
+        - wiki/concepts/equity.md
+        -->
+        <section class="slide" data-stage="階段三：三大基石">
+            <h1 class="slide-title"><span>🧱</span> 第三講：會計世界的三大要素</h1>
+            <p class="slide-subtitle">任何一間跨國企業或路邊小攤，其財務結構都可以拆解為這三大核心拼圖。</p>
+
+            <div class="grid-3">
+                <div class="card" style="border-top: 4px solid var(--primary);">
+                    <div class="card-header asset-color">
+                        <span>💰</span> 資產 (Assets)
+                    </div>
+                    <div class="card-body">
+                        <p style="font-weight: 600; color: #fff; margin-bottom: 6px;">「企業所控制且具未來效益的資源」</p>
+                        <ul style="padding-left: 18px; font-size: 0.88rem; line-height: 1.6;">
+                            <li><strong>三大要件：</strong>過去交易取得、企業擁有實質控制力、具備未來經濟利益流入。</li>
+                            <li><strong>清爽茶飲店範例：</strong>收銀機裡的<strong>現金</strong>、外送累積的<strong>應收帳款</strong>、倉庫裡的<strong>茶葉耗材</strong>、門市的<strong>封口機與製冰機</strong>。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--accent-amber);">
+                    <div class="card-header liability-color">
+                        <span>🧾</span> 負債 (Liabilities)
+                    </div>
+                    <div class="card-body">
+                        <p style="font-weight: 600; color: #fff; margin-bottom: 6px;">「企業所承擔且須清償的現時債務」</p>
+                        <ul style="padding-left: 18px; font-size: 0.88rem; line-height: 1.6;">
+                            <li><strong>三大要件：</strong>過去交易產生、現時無法逃避的法定或推定義務、清償將導致經濟資源流出。</li>
+                            <li><strong>清爽茶飲店範例：</strong>欠酪農的<strong>鮮奶應付帳款</strong>、跟銀行借的<strong>青年創業貸款</strong>、下個月 5 號才發的<strong>應付薪資</strong>。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--accent-green);">
+                    <div class="card-header equity-color">
+                        <span>👑</span> 權益 (Equity)
+                    </div>
+                    <div class="card-body">
+                        <p style="font-weight: 600; color: #fff; margin-bottom: 6px;">「資產扣除負債後的剩餘身價（淨資產）」</p>
+                        <ul style="padding-left: 18px; font-size: 0.88rem; line-height: 1.6;">
+                            <li><strong>本質：</strong>所有者對企業資產扣掉所有債務後的剩餘求償權（Residual Claim）。</li>
+                            <li><strong>兩大來源：</strong>
+                                <br>1. <strong>股本 (Capital)</strong>：張老闆一開始自掏腰包投入的資金。
+                                <br>2. <strong>保留盈餘 (Retained Earnings)</strong>：歷年營業賺來的獲利扣除分紅後留在店裡的累積成果。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 14px; background: rgba(15, 23, 42, 0.7);">
+                <div class="card-body" style="font-size: 0.92rem; color: #cbd5e1;">
+                    ⚠️ <strong>排除未來承諾：</strong>張老闆打算下個月去二手市場買一台二手貨車，這<strong>不是</strong>現在的資產；張老闆簽約答應下季跟某果農買檸檬，只要果農還沒交貨，這筆承諾也<strong>不能</strong>列為現在的負債！
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 5: 會計恆等式
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/accounting-equation.md
+        - wiki/concepts/equity.md
+        -->
+        <section class="slide" data-stage="階段四：會計恆等式">
+            <h1 class="slide-title"><span>⚖️</span> 第四講：會計的基石——會計恆等式</h1>
+            <p class="slide-subtitle">整個複式簿記體系的數學骨架，猶如物理學的能量守恆定律。</p>
+
+            <div class="formula-box">
+                <span class="asset-color">資產 (Assets)</span> ＝ <span class="liability-color">負債 (Liabilities)</span> ＋ <span class="equity-color">權益 (Equity)</span>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><span class="asset-color">左邊：企業擁有什麼？</span></div>
+                    <div class="card-body">
+                        <p><strong>經濟資源的「現有型態」</strong></p>
+                        <p>企業手中握有的現金、應收款、茶葉耗材、廠房設備。所有看得到、用得到的資源都在等式左邊。</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><span class="equity-color">右邊：這些東西是誰出的？</span></div>
+                    <div class="card-body">
+                        <p><strong>經濟資源的「資金來源與索求權」</strong></p>
+                        <p>• <strong>債權人出的：</strong>稱之為「負債」（外人出資，享有優先受償權）。<br>
+                        • <strong>老闆自己出的：</strong>稱之為「權益」（業主出資，享有剩餘受償權）。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 14px;">
+                <div class="card-header" style="font-size: 1rem; color: #e2e8f0;">
+                    <span>🚀</span> 深入拆解：權益內部的四股驅動力量
+                </div>
+                <div class="card-body" style="font-size: 0.9rem;">
+                    <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 6px;">
+                        <div style="flex: 1; background: rgba(52, 211, 153, 0.1); border: 1px solid var(--accent-green); border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="color: var(--accent-green); font-weight: 700;">業主投資 (+)</div>
+                            <small>投入資金，權益增加</small>
+                        </div>
+                        <div style="flex: 1; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--primary); border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="color: var(--primary); font-weight: 700;">營業收入 (+)</div>
+                            <small>賣出商品，權益增加</small>
+                        </div>
+                        <div style="flex: 1; background: rgba(248, 113, 113, 0.1); border: 1px solid var(--accent-rose); border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="color: var(--accent-rose); font-weight: 700;">營運費用 (-)</div>
+                            <small>產生耗費，權益減少</small>
+                        </div>
+                        <div style="flex: 1; background: rgba(251, 191, 36, 0.1); border: 1px solid var(--accent-amber); border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="color: var(--accent-amber); font-weight: 700;">發放股利 (-)</div>
+                            <small>盈餘分紅，權益減少</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 6: 恆等式實戰示範
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/examples/beverage-shop.md
+        - wiki/concepts/accounting-equation.md
+        -->
+        <section class="slide" data-stage="階段四：會計恆等式">
+            <h1 class="slide-title"><span>🥤</span> 恆等式實戰：清爽茶飲店開張囉！</h1>
+            <p class="slide-subtitle">看看日常的每一筆商業交易，如何完美維持天平兩邊的平衡。</p>
+
+            <table class="slide-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">交易情境</th>
+                        <th style="width: 35%;">等式左端：資產 (Assets)</th>
+                        <th style="width: 20%;">等式右端：負債</th>
+                        <th style="width: 20%;">等式右端：權益</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>(1) 張老闆出資</strong><br><small style="color: var(--text-muted);">拿出 15,000 元作為股本</small></td>
+                        <td><span class="asset-color">+15,000</span> (現金 Cash)</td>
+                        <td>0</td>
+                        <td><span class="equity-color">+15,000</span> (股本 Capital)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>(2) 現金買設備</strong><br><small style="color: var(--text-muted);">花 7,000 元買封口機</small></td>
+                        <td><span class="expense-color">-7,000</span> (現金)<br><span class="asset-color">+7,000</span> (設備 Equipment)</td>
+                        <td>0</td>
+                        <td>0 <small>(資產內部交換)</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>(3) 賒購外帶紙杯</strong><br><small style="color: var(--text-muted);">進貨 1,600 元包材下月付</small></td>
+                        <td><span class="asset-color">+1,600</span> (耗材用品 Supplies)</td>
+                        <td><span class="liability-color">+1,600</span> (應付帳款 A/P)</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>(4) 賣茶飲全數收現</strong><br><small style="color: var(--text-muted);">首日營業賺進現金 1,200 元</small></td>
+                        <td><span class="asset-color">+1,200</span> (現金 Cash)</td>
+                        <td>0</td>
+                        <td><span class="equity-color">+1,200</span> (服務收入 Revenue)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="formula-box" style="font-size: 1.15rem; margin-top: 10px; background: rgba(30, 41, 59, 0.7);">
+                此時天平累計：<span class="asset-color">總資產 NT$ 17,800</span> (現金 9,200 + 設備 7,000 + 耗材 1,600) <br>
+                ＝ <span class="liability-color">負債 NT$ 1,600</span> (應付帳款) ＋ <span class="equity-color">權益 NT$ 16,200</span> (股本 15,000 + 營收 1,200)
+            </div>
+
+            <p style="font-size: 0.88rem; color: var(--text-muted); text-align: center;">
+                👉 <strong>關鍵頓悟：</strong>交易可能改變資產的組成形式，或使規模擴大，但「天平左邊必定永遠等於右邊」！
+            </p>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 7: 什麼才算會計上的「交易」？
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/transactions.md
+        - wiki/concepts/accounting.md
+        -->
+        <section class="slide" data-stage="階段四：會計恆等式">
+            <h1 class="slide-title"><span>🧐</span> 延伸思考：什麼才算會計上的「交易」？</h1>
+            <p class="slide-subtitle">日常發生的所有大事，會計人員都要立刻登記嗎？判定標準到底是什麼？</p>
+
+            <div class="formula-box" style="font-size: 1.15rem; color: #f8fafc; border-color: var(--accent-amber);">
+                ⚖️ <strong>交易的唯一判定標準：</strong><br>
+                該事件是否<strong>實質改變了企業的財務狀況</strong>（資產、負債或權益任一要素發生具體變動）？
+            </div>
+
+            <div class="grid-2">
+                <div class="card" style="border-left: 4px solid var(--accent-rose);">
+                    <div class="card-header" style="color: var(--accent-rose);">
+                        <span>❌</span> 不屬於會計交易（不記分錄）
+                    </div>
+                    <div class="card-body">
+                        <ul style="padding-left: 20px; line-height: 1.7;">
+                            <li><strong>聘用天才店長：</strong>張老闆面試了頂級手搖飲研發師，雙方相談甚歡並簽署合約，約定月薪 60,000 元。</li>
+                            <li><strong>向廠商詢價/下訂單：</strong>張老闆打電話給茶廠訂購 50 斤錫蘭紅茶，廠商允諾下週送達。</li>
+                        </ul>
+                        <div style="background: rgba(248, 113, 113, 0.1); padding: 8px 12px; border-radius: 6px; margin-top: 8px; font-size: 0.85rem; color: #fca5a5;">
+                            👉 <strong>原因：</strong>雖然簽了約、下了單，但此時<strong>尚未提供勞務、也尚未交付貨物</strong>，店裡的資產、負債、權益沒有任何一毛錢發生轉移！
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--accent-green);">
+                    <div class="card-header" style="color: var(--accent-green);">
+                        <span>✅</span> 正式會計交易（必須入帳）
+                    </div>
+                    <div class="card-body">
+                        <ul style="padding-left: 20px; line-height: 1.7;">
+                            <li><strong>月底結算發放薪水：</strong>店長認真工作了一整個月，張老闆從銀行帳戶轉帳 60,000 元薪資。</li>
+                            <li><strong>廠商送貨並簽收帳單：</strong>50 斤茶葉送達門市倉庫並驗收入庫，廠商遞交請款發票。</li>
+                        </ul>
+                        <div style="background: rgba(52, 211, 153, 0.1); padding: 8px 12px; border-radius: 6px; margin-top: 8px; font-size: 0.85rem; color: #86efac;">
+                            👉 <strong>原因：</strong>勞務已發生（產生薪資費用）、茶葉已入庫（資產增加且負債產生），財務狀況實質改變！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 8: 借貸法則
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/debit-credit.md
+        - wiki/concepts/accounting-equation.md
+        -->
+        <section class="slide" data-stage="階段五：借貸法則">
+            <h1 class="slide-title"><span>↔️</span> 第五講：借貸法則是怎麼一回事？</h1>
+            <p class="slide-subtitle">初學者最大的噩夢？別怕！先把日常生活中「借錢、貸款」的意思徹底從大腦刪除！</p>
+
+            <div class="formula-box" style="font-size: 1.3rem; color: #38bdf8;">
+                在會計學裡：<strong>借 (Debit) ＝ 左邊 (Left)</strong> ｜ <strong>貸 (Credit) ＝ 右邊 (Right)</strong>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header asset-color">
+                        <span>⬅️</span> 天平左側家族（資產、費用、股利）
+                    </div>
+                    <div class="card-body">
+                        <div class="t-account">
+                            <div class="t-account-title">資產 / 費用 / 股利 帳戶</div>
+                            <div class="t-account-body">
+                                <div class="t-debit">
+                                    <strong>借方 (Debit)</strong><br>
+                                    <span style="font-size: 1.2rem; font-weight: bold; color: var(--accent-green);">＋ 增加</span><br>
+                                    (正常餘額 Normal Balance)
+                                </div>
+                                <div class="t-credit">
+                                    <strong>貸方 (Credit)</strong><br>
+                                    <span style="font-size: 1.2rem; font-weight: bold; color: var(--accent-rose);">－ 減少</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+                            口訣：既然位於天平左邊，所以「在左邊（借方）記增加」最自然！
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header liability-color">
+                        <span>➡️</span> 天平右側家族（負債、股本、保留盈餘、收入）
+                    </div>
+                    <div class="card-body">
+                        <div class="t-account">
+                            <div class="t-account-title">負債 / 股本 / 收入 帳戶</div>
+                            <div class="t-account-body">
+                                <div class="t-debit">
+                                    <strong>借方 (Debit)</strong><br>
+                                    <span style="font-size: 1.2rem; font-weight: bold; color: var(--accent-rose);">－ 減少</span>
+                                </div>
+                                <div class="t-credit">
+                                    <strong>貸方 (Credit)</strong><br>
+                                    <span style="font-size: 1.2rem; font-weight: bold; color: var(--accent-green);">＋ 增加</span><br>
+                                    (正常餘額 Normal Balance)
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+                            口訣：既然位於天平右邊，所以「在右邊（貸方）記增加」最合理！
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-box" style="margin-top: 12px;">
+                <div class="story-title">💡 秒懂借貸記憶法</div>
+                借貸方向完全是由<strong>「會計恆等式：資產 ＝ 負債 ＋ 權益」</strong>決定的！資產增加在左邊（借記資產），欠人家的負債增加在右邊（貸記負債）。只要記住「借左貸右」，借貸一點也不神秘！
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 9: 複式簿記的奧秘
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/double-entry.md
+        - wiki/concepts/journal-and-entry.md
+        - wiki/concepts/ledger-and-posting.md
+        -->
+        <section class="slide" data-stage="階段五：借貸法則">
+            <h1 class="slide-title"><span>🔄</span> 複式簿記：有借必有貸，借貸必相等</h1>
+            <p class="slide-subtitle">1494 年由義大利數學家盧卡·帕喬利發表，500 多年來守護人類商業文明運作的智慧。</p>
+
+            <div class="formula-box" style="font-size: 1.35rem; color: var(--accent-green);">
+                🌟 複式簿記金科玉律：<strong>有借必有貸，借貸必相等！</strong>
+            </div>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header"><span class="tag tag-blue">步驟 1</span> 交易分析</div>
+                    <div class="card-body" style="font-size: 0.9rem;">
+                        查看原始憑證（發票、收據），分析影響了哪些會計科目？各科目是增加還是減少？
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="tag tag-green">步驟 2</span> 寫日記簿分錄</div>
+                    <div class="card-body" style="font-size: 0.9rem;">
+                        將交易依照時間先後順序，完整登載到<strong>普通日記簿 (General Journal)</strong>，先借後貸。
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="tag tag-amber">步驟 3</span> 過帳至分類帳</div>
+                    <div class="card-body" style="font-size: 0.9rem;">
+                        把日記簿中的借貸金額，各自謄寫到<strong>總分類帳 (General Ledger)</strong> 各自的科目帳頁中。
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 16px; background: rgba(15, 23, 42, 0.7);">
+                <div class="card-body" style="font-size: 0.92rem; color: #cbd5e1; line-height: 1.7;">
+                    🛡️ <strong>單式記帳 vs. 複式簿記：</strong><br>
+                    • <strong>單式記帳（流水帳）：</strong>只記錄「今天收了 1,000 元、花了 300 元」，不知道錢怎麼來的、花去哪裡、店裡還剩多少資產或欠款。<br>
+                    • <strong>複式簿記：</strong>每筆交易同時記錄「原因」與「結果」（如買機器：現金減少、設備增加），天然具備自我校驗能力，借貸不平必定有錯！
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 10: 基本交易與分錄寫法
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/journal-and-entry.md
+        - wiki/examples/beverage-shop.md
+        -->
+        <section class="slide" data-stage="階段六：分錄實戰">
+            <h1 class="slide-title"><span>✍️</span> 第六講：手把手寫出第一筆借貸分錄</h1>
+            <p class="slide-subtitle">日記簿是記錄交易全貌的「時序錄影帶」，看看標準格式如何書寫。</p>
+
+            <div class="grid-2">
+                <div>
+                    <h3 style="font-size: 1.05rem; color: var(--primary); margin-bottom: 8px;">🥤 實例 1：現調茶飲銷售收現（簡單分錄）</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 6px;">清爽茶飲店賣茶飲收到現金 1,200 元。</p>
+                    <div class="journal-code">
+                        2026/10/01<br>
+                        <strong>借：現金 (Cash)</strong> <span style="float: right;">1,200</span><br>
+                        <span class="indent-entry"><strong>貸：服務收入 (Service Revenue)</strong></span> <span style="float: right;">1,200</span><br>
+                        <small style="color: #64748b;">(現調茶飲銷售收現)</small>
+                    </div>
+                    <p style="font-size: 0.82rem; color: #94a3b8; margin-top: 4px;">
+                        • 借方「現金」增加 1,200（資產增）<br>
+                        • 貸方「服務收入」增加 1,200（使權益增）
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="font-size: 1.05rem; color: var(--accent-amber); margin-bottom: 8px;">🏢 實例 2：科技公司下午茶團購（複合分錄）</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 6px;">外送大單 3,500 元，現場收現 1,500 元，餘款 2,000 元賒帳。</p>
+                    <div class="journal-code">
+                        2026/10/05<br>
+                        <strong>借：現金 (Cash)</strong> <span style="float: right;">1,500</span><br>
+                        <strong>借：應收帳款 (Accounts Receivable)</strong> <span style="float: right;">2,000</span><br>
+                        <span class="indent-entry"><strong>貸：服務收入 (Service Revenue)</strong></span> <span style="float: right;">3,500</span><br>
+                        <small style="color: #64748b;">(銷售茶飲，收現 1,500，餘款賒銷)</small>
+                    </div>
+                    <p style="font-size: 0.82rem; color: #94a3b8; margin-top: 4px;">
+                        • 借方合計 $1,500 + 2,000 = 3,500$<br>
+                        • 貸方合計 $3,500$，<strong>借貸總額完全相等！</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 14px; background: rgba(56, 189, 248, 0.08);">
+                <div class="card-header" style="font-size: 0.95rem; color: #ffffff;">
+                    📐 分錄格式的三大規矩：
+                </div>
+                <div class="card-body" style="font-size: 0.88rem; color: #cbd5e1;">
+                    1. <strong>先借後貸：</strong>必須先把所有借方科目寫完，才能寫貸方科目。<br>
+                    2. <strong>貸方縮排：</strong>貸方科目名稱必須向右縮排（通常為 2～3 個字元），以目視區分借貸。<br>
+                    3. <strong>金額對齊：</strong>借方金額填入左欄，貸方金額填入右欄，總和必定相等。
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 11: 過帳與試算表
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/ledger-and-posting.md
+        - wiki/reports/trial-balance.md
+        - wiki/comparisons/journal-vs-ledger.md
+        -->
+        <section class="slide" data-stage="階段六：分錄實戰">
+            <h1 class="slide-title"><span>📑</span> 分類帳與試算表：檢查天平平衡</h1>
+            <p class="slide-subtitle">日記簿是時間順序，分類帳是分類檔案夾；期末編製試算表確認沒有算錯。</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="font-size: 1.05rem;">
+                        <span>📚</span> 日記簿 vs. 總分類帳 (Journal vs. Ledger)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>普通日記簿：</strong>像<strong>錄影帶</strong>，按時間完整記錄一筆交易的全貌（借什麼、貸什麼）。但若想知道「店裡現在剩多少現金」，必須倒帶翻找每一頁。<br>
+                        • <strong>總分類帳：</strong>像<strong>分類檔案夾</strong>，為每個科目設立專屬帳頁。過帳就是把日記簿上的數字歸檔進個別檔案夾，隨時結出最新餘額。
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="font-size: 1.05rem;">
+                        <span>📊</span> 試算表 (Trial Balance) 是什麼？
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        在編製正式報表前，把總分類帳上<strong>所有科目的期末餘額</strong>抄在一張表上（借方一欄、貸方一欄）。<br>
+                        • <strong>目的：</strong>驗證數學上的借貸平衡（借方總額 ＝ 貸方總額）。<br>
+                        • <strong>局限：</strong>試算表借貸相等，只能保證數學計算沒算錯，不能保證沒有整筆漏記、重複記帳或科目誤用。
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 14px; border-left: 4px solid var(--accent-amber);">
+                <div class="card-header" style="font-size: 0.95rem; color: var(--accent-amber);">
+                    🔍 查錯實務兩大神技（02 P.56）
+                </div>
+                <div class="card-body" style="font-size: 0.88rem; color: #cbd5e1;">
+                    • <strong>差額除以 2（借貸放反）：</strong>若試算表借貸差額能被 2 整除，去檢查是否有借方科目不小心抄到貸方（例如將 500 元借方誤記為貸方，借貸差額會膨脹為 1,000 元）。<br>
+                    • <strong>差額除以 9（數字換位筆誤）：</strong>若差額能被 9 整除，八成是相鄰兩位數抄顛倒（例如把 45 元寫成 54 元，差額 $54 - 45 = 9$，必定被 9 整除）。
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 12: 兩大財務報表對決
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/comparisons/balance-sheet-vs-income-statement.md
+        - wiki/reports/balance-sheet.md
+        - wiki/reports/income-statement.md
+        -->
+        <section class="slide" data-stage="階段七：報表對決">
+            <h1 class="slide-title"><span>⚔️</span> 第七講：兩大核心財務報表對決</h1>
+            <p class="slide-subtitle">資產負債表與損益表，到底分別回答了企業經營的什麼問題？</p>
+
+            <table class="slide-table" style="margin-top: 10px;">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">比較維度</th>
+                        <th style="width: 40%;" class="asset-color">資產負債表 (Balance Sheet / 財務狀況表)</th>
+                        <th style="width: 40%;" class="equity-color">損益表 (Income Statement)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>回答核心問題</strong></td>
+                        <td><strong>「此時此刻，企業的身價與財務體質如何？」</strong><br>(擁有多少資源？欠多少外債？淨身價多少？)</td>
+                        <td><strong>「這段時間，企業到底是賺錢還是賠錢？」</strong><br>(營業績效如何？獲利從哪來？耗費多少成本？)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>時間維度</strong></td>
+                        <td><strong>特定時點 (Point in Time)</strong><br>如：2026 年 12 月 31 日（像一張<strong>「單眼拍下的照片快照」</strong>）</td>
+                        <td><strong>特定期間 (Period of Time)</strong><br>如：2026 全年度、10 月份（像一部<strong>「運作過程的錄影帶」</strong>）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>數據本質</strong></td>
+                        <td><strong>存量資訊 (Stock)</strong>：創立至今累積的總額</td>
+                        <td><strong>流量資訊 (Flow)</strong>：單一期間發生的進出動態</td>
+                    </tr>
+                    <tr>
+                        <td><strong>組成要素</strong></td>
+                        <td><strong>資產 (Assets)、負債 (Liabilities)、權益 (Equity)</strong></td>
+                        <td><strong>收入 (Revenues)、費用 (Expenses)</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="formula-box" style="font-size: 1.05rem; margin-top: 14px; background: rgba(15, 23, 42, 0.7); border-color: var(--accent-green);">
+                🔗 <strong>兩大報表如何勾稽串聯？</strong><br>
+                損益表算出當期「<strong>淨利 (Net Income)</strong>」 $\longrightarrow$ 灌入保留盈餘表結轉 $\longrightarrow$ 匯入資產負債表右側的「<strong>權益</strong>」項目，維持恆等式平衡！
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 13: 讀懂資產負債表（分類報表）
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/reports/balance-sheet.md
+        - wiki/concepts/assets.md
+        - wiki/concepts/liabilities.md
+        -->
+        <section class="slide" data-stage="階段七：報表對決">
+            <h1 class="slide-title"><span>📋</span> 讀懂資產負債表：流動與非流動的秘密</h1>
+            <p class="slide-subtitle">分類財務狀況表將資產與負債切成「流動」與「非流動」，看出短期還款壓力。</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header asset-color">
+                        <span>🌊</span> 流動項目 (Current)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>界定標準：</strong>以「<strong>一年</strong>」或「<strong>正常營運週期 (Operating Cycle)</strong>」較長者為準（04 P.40）。<br>
+                        • <strong>流動資產：</strong>預期一年內變現、出售或耗用的資產（如現金、應收帳款、商品存貨、預付保險費）。<br>
+                        • <strong>流動負債：</strong>預期一年內需要拿現金清償的債務（如應付帳款、短期借款、應付薪資）。<br>
+                        ⚠️ <strong>償債警訊：</strong>等額負債下，<strong>流動負債比重愈高，企業即期的還款壓力與周轉危機愈大！</strong>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header liability-color">
+                        <span>🏔️</span> 非流動項目 (Non-Current)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>界定標準：</strong>變現或清償期超過一年以上之長期資金與資產。<br>
+                        • <strong>非流動資產：</strong>不動產廠房及設備（製冰機、裝潢）、長期投資、無形資產（商標專利）。<br>
+                        • <strong>非流動負債：</strong>五年期長期銀行借款、長期應付票據。<br>
+                        • <strong>權益 (Equity)：</strong>所有者的股本與歷年累積保留盈餘，屬永久性長期資金來源。
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-box" style="margin-top: 14px;">
+                <div class="story-title">🥤 清爽茶飲店資產負債表快照</div>
+                <strong>總資產 NT$ 18,050</strong>（流動資產：現金 8,050 + 應收 1,400 + 耗材 1,600 ＝ 11,050；非流動設備：7,000）<br>
+                ＝ <strong>總負債 NT$ 1,600</strong>（流動應付帳款 1,600，下週到期）＋ <strong>總權益 NT$ 16,450</strong>（張老闆股本 15,000 + 保留盈餘 1,450）。體質非常健康！
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 14: 讀懂損益表（多步驟損益表）
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/reports/income-statement.md
+        - wiki/concepts/merchandising-accounting.md
+        -->
+        <section class="slide" data-stage="階段七：報表對決">
+            <h1 class="slide-title"><span>📈</span> 讀懂損益表：多步驟分層的獲利密碼</h1>
+            <p class="slide-subtitle">損益表不只是「收入減費用」，多步驟格式帶你層層看穿企業的賺錢實力。</p>
+
+            <div class="grid-2">
+                <div class="card" style="font-family: monospace; font-size: 0.9rem; line-height: 1.8;">
+                    <div style="color: var(--primary); font-weight: bold;">　銷貨收入 (Sales Revenue)</div>
+                    <div style="color: #94a3b8;">－ 銷貨退回、折讓與折扣</div>
+                    <div style="border-bottom: 1px solid #475569; padding-bottom: 2px;">＝ <strong>銷貨淨額 (Net Sales)</strong></div>
+                    <div style="color: var(--accent-rose);">－ <strong>銷貨成本 (Cost of Goods Sold)</strong></div>
+                    <div style="border-bottom: 2px solid var(--accent-green); padding-bottom: 2px; color: var(--accent-green); font-weight: bold; font-size: 1rem;">
+                        ＝ 銷貨毛利 (Gross Profit)
+                    </div>
+                    <div style="color: #94a3b8;">－ <strong>營業費用 (Operating Expenses)</strong> (薪資、租金、廣告)</div>
+                    <div style="border-bottom: 1px solid #475569; padding-bottom: 2px; color: var(--accent-amber); font-weight: bold;">
+                        ＝ 營業利益 (Income from Operations)
+                    </div>
+                    <div style="color: #94a3b8;">± 營業外損益 (利息收支、處分設備損益)</div>
+                    <div style="border-bottom: 3px double #ffffff; padding-bottom: 2px; color: #ffffff; font-weight: bold; font-size: 1.05rem;">
+                        ＝ 本期淨利 (Net Income)
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="font-size: 1.05rem; color: var(--accent-green);">
+                        <span>🎯</span> 為什麼要分這麼多層？
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>銷貨毛利 (Gross Profit)：</strong>賣這項產品本身的賺錢潛力！如果毛利是負的，賣越多死越快。<br>
+                        • <strong>毛利率 (Gross Profit Rate)：</strong>$\frac{\text{毛利}}{\text{銷貨淨額}}$。例如茶飲店賣一杯 50 元珍奶，茶葉與珍珠成本 15 元，毛利 35 元，毛利率高達 $70\%$！<br>
+                        • <strong>營業利益 (Operating Income)：</strong>扣掉房租、水電與店員薪水後，本業到底有沒有賺？<br>
+                        • <strong>本期淨利 (Net Income)：</strong>企業最後實質落袋的經營總成果。
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-box" style="margin-top: 14px;">
+                <div class="story-title">🥤 清爽茶飲店 10 月損益成績單</div>
+                營業收入 4,700 元 － 各項營業費用 1,950 元（租金 600 + 薪資 900 + 水電 200 + 傳單 250）＝ <strong>當月淨利 2,750 元</strong>！全數結轉累積至張老闆的保留盈餘。
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 15: 會計循環與期末結清
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/accounting-cycle.md
+        - wiki/concepts/adjusting-entries.md
+        -->
+        <section class="slide" data-stage="階段八：循環與買賣業">
+            <h1 class="slide-title"><span>🔄</span> 第八講：完整的會計循環與期末結帳</h1>
+            <p class="slide-subtitle">一個會計年度結束時，會計人如何讓帳本煥然一新、準備跨入下一年？</p>
+
+            <div class="flow-container">
+                <div class="flow-step">1. 交易分析</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">2. 日記簿分錄</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">3. 分類帳過帳</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">4. 試算表</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step active-step">5. 調整分錄</div>
+            </div>
+            <div class="flow-container" style="margin-top: -6px;">
+                <div class="flow-step active-step">6. 調整後試算表</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">7. 編財務報表</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step active-step">8. 結帳分錄</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">9. 結帳後試算表</div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 10px;">
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--primary);">
+                        <span>⏱️</span> 為什麼需要「調整分錄」？(03 P.22)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        日常記錄依據發票，但許多耗費是<strong>隨時間自然流逝</strong>的（如紙杯已被客人用掉、工讀生已上班但次月才發薪）。<br>
+                        • 依據<strong>應計基礎</strong>與<strong>配合原則</strong>，期末必須調整修正！<br>
+                        • <strong>鐵律：</strong>調整分錄<strong>永遠不涉及現金</strong>，必定跨損益與資產負債科目！
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="font-size: 1rem; color: var(--accent-amber);">
+                        <span>🧹</span> 為什麼需要「結帳分錄」？(04 P.20)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>虛帳戶（收入、費用、股利）：</strong>像里程表，期末必須<strong>全數結清歸零</strong>，將獲利結轉至保留盈餘，明年才能從 0 重算！<br>
+                        • <strong>實帳戶（資產、負債、權益）：</strong>餘額保留，滾動跨入新年度。<br>
+                        • <strong>結帳後試算表：</strong>只剩實帳戶，做新年度起點的平衡確認。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 16: 延伸應用：手搖飲店跨足買賣業
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/merchandising-accounting.md
+        - wiki/examples/beverage-shop.md
+        -->
+        <section class="slide" data-stage="階段八：循環與買賣業">
+            <h1 class="slide-title"><span>🛍️</span> 延伸應用：手搖飲店兼賣保溫杯</h1>
+            <p class="slide-subtitle">從一般服務業延伸到買賣業，多了實體「商品存貨」，會計處理有何不同？</p>
+
+            <div class="story-box">
+                <div class="story-title">🥤 清爽茶飲店第三階段商業擴展</div>
+                張老闆在櫃檯旁增設專區，轉售印有店徽的精美「不鏽鋼保溫杯」，正式跨足買賣業！
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><span class="tag tag-blue">進貨環節</span> 批發購入商品存貨</div>
+                    <div class="card-body" style="font-size: 0.88rem;">
+                        以批發價每個 150 元購入 100 個保溫杯，支付現金 15,000 元。
+                        <div class="journal-code">
+                            借：商品存貨 (Inventory) 15,000<br>
+                            <span class="indent-entry">貸：現金 (Cash) 15,000</span>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.82rem;">👉 此時尚未賣出，只是現金變成庫存資產。</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><span class="tag tag-green">銷貨環節</span> 賣出商品的「雙重分錄」</div>
+                    <div class="card-body" style="font-size: 0.88rem;">
+                        客戶以每個 250 元現金買走 60 個保溫杯，收現 15,000 元。
+                        <div class="journal-code">
+                            1. 借：現金 15,000 / 貸：銷貨收入 15,000<br>
+                            2. 借：銷貨成本 9,000 / 貸：商品存貨 9,000<br>
+                            <small style="color: #64748b;">(60 個 × 成本 150 元 = 結轉成本 9,000)</small>
+                        </div>
+                        <p style="color: var(--accent-green); font-size: 0.82rem;">
+                            👉 <strong>成果：</strong>銷貨毛利 $15,000 - 9,000 = \mathbf{6,000\text{ 元}}$（毛利率 40%）；倉庫還剩 40 個保溫杯（商品存貨 6,000 元）！
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 10px; background: rgba(15, 23, 42, 0.7);">
+                <div class="card-body" style="font-size: 0.88rem; color: #cbd5e1;">
+                    📦 <strong>成本流動公式 (Flow of Costs)：</strong><br>
+                    $\text{期初存貨 } 0 + \text{本期進貨 } 15,000 = \text{可供銷售 } 15,000 = \mathbf{銷貨成本 } 9,000 + \mathbf{期末存貨 } 6,000$。數字滴水不漏！
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 17: 四大核心會計假設
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/concepts/accounting-assumptions.md
+        - wiki/concepts/recognition-and-measurement.md
+        -->
+        <section class="slide" data-stage="階段九：觀念總結">
+            <h1 class="slide-title"><span>🏛️</span> 報表背後的隱形支柱：四大會計假設</h1>
+            <p class="slide-subtitle">如果沒有這四大基礎假設，全世界的財務報表將失去比較的基礎。</p>
+
+            <div class="grid-2">
+                <div class="card" style="border-left: 4px solid var(--primary);">
+                    <div class="card-header" style="font-size: 1.05rem;">
+                        <span>👤</span> 1. 企業個體假設 (Economic Entity)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>意涵：</strong>企業是獨立的個體，與業主個人的財務嚴格劃分。<br>
+                        • <strong>手搖飲例子：</strong>張老闆去百貨公司買自己穿的名牌球鞋 5,000 元，不能報成茶飲店的支出；營業收到的錢，老闆也不能隨意拿去繳私人房貸。
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--accent-amber);">
+                    <div class="card-header" style="font-size: 1.05rem;">
+                        <span>💲</span> 2. 貨幣單位衡量假設 (Monetary Unit)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>意涵：</strong>以貨幣作為共通計量單位，並隱含幣值相對穩定。<br>
+                        • <strong>手搖飲例子：</strong>店裡盤點有 10 箱茶葉、1 台封口機，不能寫「10箱＋1台」，必須換算成新台幣 15,000 元與 30,000 元，才能在報表上加總比較。
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--accent-green);">
+                    <div class="card-header" style="font-size: 1.05rem;">
+                        <span>📅</span> 3. 會計期間假設 (Time Period / Periodicity)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>意涵：</strong>人為將企業漫長壽命切割成相等時間片段（月、季、年）定期報導。<br>
+                        • <strong>手搖飲例子：</strong>張老闆不能等開店 30 年歇業才算總帳，而是每月底定期算月報、每年 12 月底算年報，這是引發期末調整分錄的根本原因。
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--accent-purple);">
+                    <div class="card-header" style="font-size: 1.05rem;">
+                        <span>⏳</span> 4. 繼續經營假設 (Going Concern)
+                    </div>
+                    <div class="card-body" style="font-size: 0.88rem; line-height: 1.6;">
+                        • <strong>意涵：</strong>假設企業在可預見未來將持續營運，無清算倒閉意圖。<br>
+                        • <strong>手搖飲例子：</strong>30,000 元買的封口機按年提列折舊，排除「明天倒閉跳樓拍賣只值 3,000 元」的清算價值，讓歷史成本衡量具備正當性。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SLIDE 18: 學習成果驗收
+             ========================================== -->
+        <!--
+        Wiki Sources:
+        - wiki/index.md
+        - wiki/concepts/accounting.md
+        - wiki/concepts/accounting-equation.md
+        - wiki/comparisons/balance-sheet-vs-income-statement.md
+        - wiki/concepts/debit-credit.md
+        -->
+        <section class="slide" data-stage="階段九：觀念總結">
+            <h1 class="slide-title"><span>🎓</span> 第九講：學習成果大驗收！</h1>
+            <p class="slide-subtitle">恭喜你完成全套入門課程！點擊下列四個問題，測試自己是否完全掌握四項核心能力：</p>
+
+            <div class="quiz-option" onclick="toggleQuiz('ans1')">
+                <strong>❓ 檢驗 1：你能用自己的話說明會計在做什麼、誰在使用資訊嗎？</strong>
+                <div class="quiz-answer" id="ans1">
+                    👉 <strong>驗收解答：</strong>會計是商業共通語言，包含辨認、記錄與溝通三大活動。內部使用者（店長、經理人）用「管理會計」做定價與營運決策；外部使用者（股東、銀行、國稅局）用「財務會計」評估投資回報、償債能力與繳稅。
+                </div>
+            </div>
+
+            <div class="quiz-option" onclick="toggleQuiz('ans2')">
+                <strong>❓ 檢驗 2：你能說出會計恆等式，並用茶飲店例子解釋嗎？</strong>
+                <div class="quiz-answer" id="ans2">
+                    👉 <strong>驗收解答：</strong>恆等式是「<strong>資產 ＝ 負債 ＋ 權益</strong>」。茶飲店擁有的現金與設備（資產），來源只有兩種：向廠商欠款或銀行借錢（負債），以及張老闆自己的出資與營運獲利累積（權益）。天平兩端永遠相等！
+                </div>
+            </div>
+
+            <div class="quiz-option" onclick="toggleQuiz('ans3')">
+                <strong>❓ 檢驗 3：你能精準分辨資產負債表與損益表各自回答什麼問題嗎？</strong>
+                <div class="quiz-answer" id="ans3">
+                    👉 <strong>驗收解答：</strong>資產負債表是<strong>特定時點的「存量快照」</strong>，回答「此刻企業擁有多少資產、欠多少外債、身價幾何」；損益表是<strong>特定期間的「流量錄影帶」</strong>，回答「這段時間是賺是賠、營業毛利與費用結構為何」。
+                </div>
+            </div>
+
+            <div class="quiz-option" onclick="toggleQuiz('ans4')">
+                <strong>❓ 檢驗 4：你能看懂一筆簡單交易如何轉換成借貸分錄嗎？</strong>
+                <div class="quiz-answer" id="ans4">
+                    👉 <strong>驗收解答：</strong>借貸就是左與右。天平左邊（資產、費用）增加記借方；天平右邊（負債、股本、收入）增加記貸方。賣茶飲收現 1,200 元：<strong>借記「現金」1,200</strong>（資產增於左），<strong>貸記「服務收入」1,200</strong>（收入增於右），借貸必相等！
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 18px; color: var(--primary); font-weight: 600;">
+                🎉 恭喜通關！你已經具備看懂商業世界運作的會計之眼！
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Footer -->
+    <footer>
+        <div class="shortcuts-hint">
+            提示：可使用鍵盤 <kbd>←</kbd> <kbd>→</kbd> 或 <kbd>Space</kbd> 切換投影片
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-nav" id="btn-prev" onclick="prevSlide()" disabled>
+                <span>←</span> 上一頁
+            </button>
+            <button class="btn-nav" id="btn-next" onclick="nextSlide()">
+                下一頁 <span>→</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Interactive Navigation Logic -->
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+        const slideCounter = document.getElementById('slide-counter');
+        const stageBadge = document.getElementById('stage-badge');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        function updateSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+
+            // Update counter and stage badge
+            slideCounter.textContent = `${index + 1} / ${totalSlides}`;
+            const currentStage = slides[index].getAttribute('data-stage') || '會計學入門';
+            stageBadge.textContent = currentStage;
+
+            // Update progress bar
+            const progress = ((index + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Update button states
+            btnPrev.disabled = index === 0;
+            btnNext.disabled = index === totalSlides - 1;
+            btnNext.innerHTML = index === totalSlides - 1 ? '完成 <span>✓</span>' : '下一頁 <span>→</span>';
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide(currentSlide);
+            }
+        }
+
+        // Toggle quiz answers
+        function toggleQuiz(id) {
+            const ans = document.getElementById(id);
+            if (ans.style.display === 'block') {
+                ans.style.display = 'none';
+            } else {
+                ans.style.display = 'block';
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                currentSlide = 0;
+                updateSlide(currentSlide);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                currentSlide = totalSlides - 1;
+                updateSlide(currentSlide);
+            }
+        });
+
+        // Initialize first slide
+        updateSlide(0);
+    </script>
+</body>
+</html>
